@@ -7,15 +7,15 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import Grid from '@material-ui/core/Grid';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart'
 import Badge from '@material-ui/core/Badge';
+import Cart from '@/cart/Cart';
 
 /* Components */
-import { CartItemType } from '@/assets/shared/types';
-import { getProducts } from '@/assets/shared/GetProduct';
+import { CartItemType } from '@/shared/types';
+import { getProducts } from '@/shared/getProduct';
 import Item from '@/item/Item';
 
 /* Styles */
 import { Wrapper, StyledButton } from './App.styles';
-import { colors } from '@material-ui/core';
 
 const App = () => {
   const [cartOpen, setCartOpen] = useState<boolean>(false);
@@ -30,11 +30,37 @@ const App = () => {
     console.log(data);
 
   /* methodes */
-  const getTotalItems = (items: CartItemType[]) => null;
+  const getTotalItems = (items: CartItemType[]) => {
+    items.reduce((acc: number, item) => acc + item.amount,0)
+  };
 
-  const handleAddToCart = (clickedItem: CartItemType) => null;
+  const handleAddToCart = (clickedItem: CartItemType) => {
+    setCartItems(prev => {
+      // 1. is the item Already added in the cart ?
+      const isItemInCart = prev.find(item => item.id === clickedItem.id)
 
-  const handleRemoveFromCart = () => null;
+      if(isItemInCart) {
+        return prev.map((item) => (
+          item.id === clickedItem.id ? { ...item, amount: item.amount +1 } : item
+        ));
+      }
+      // 1st time the item is add
+      return [...prev, {...clickedItem, amount: 1}];
+    })
+  };
+
+  const handleRemoveFromCart = (id: number) => {
+    setCartItems(prev => (
+      prev.reduce((acc, item) => {
+        if(item.id === id) {
+          if(item.amount === 1) return acc;
+          return [...acc, {...item, amount: item.amount - 1}]
+        } else {
+          return [...acc, item];
+        }
+      }, [] as CartItemType[]) 
+    ))
+  };
 
   if (isLoading) return <LinearProgress />
   if (error) return <div>Something Went Wrong ...</div>
@@ -42,10 +68,14 @@ const App = () => {
   return (
     <Wrapper>
       <Drawer anchor='right' open={cartOpen} onClose={() => setCartOpen(false)}>
-        Cart goes here
+        <Cart 
+          cartItems={cartItems} 
+          addToCart={handleAddToCart} 
+          removeFromCart={handleRemoveFromCart}
+        />
       </Drawer>
       <StyledButton onClick={() => setCartOpen(true)}>
-        <Badge badgeContent={getTotalItems(cartItems)} color='error'>
+        <Badge badgeContent={4} color="error">
           <AddShoppingCartIcon />
         </Badge>
       </StyledButton>
@@ -62,7 +92,7 @@ const App = () => {
       </Grid>
     </Wrapper>
   );
-}
+};
 
 
-export default App
+export default App;

@@ -1,7 +1,7 @@
 /* Components Npm */
 import Button from '@material-ui/core/Button';
 /* Components */
-import { CartItemType } from '@/assets/shared/types';
+import { CartItemType } from '@/shared/types';
 /* Css */
 import { Wrapper } from './Item.styles';
 
