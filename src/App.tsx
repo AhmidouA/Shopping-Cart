@@ -1,34 +1,33 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import { useQuery } from 'react-query';
 
-function App() {
-  const [count, setCount] = useState(0)
+/* Components Npm */
+import Drawer from '@aterial-ui/core/Drawer';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Frid from '@material-ui/core/Grid';
+import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart'
+import Badge from '@material-ui/core/Badge';
+
+/* Components */
+import { CartItemType } from './assets/shared/types';
+import { getProducts } from './assets/shared/GetProduct';
+
+/* Styles */
+import { Wrapper } from './App.styles';
+
+const App = () => {
+
+  /* Components */
+  const { data, isLoading, error } = useQuery<Array<CartItemType>>(
+    'product', 
+    getProducts
+    );
+    console.log(data);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className='App'>
+      Hello World
+    </div>
   )
 }
 
